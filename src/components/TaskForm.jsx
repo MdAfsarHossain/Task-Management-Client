@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import useAuth from '../hooks/useAuth';
 
 const TaskForm = ({ tasks, setTasks, refetch }) => {
-
+    const { user } = useAuth();
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
 
@@ -23,6 +24,7 @@ const TaskForm = ({ tasks, setTasks, refetch }) => {
             description,
             timestamp: new Date().toLocaleString(),
             category: "To-Do",
+            authorEmail: user?.email,
         }
 
         try {
@@ -30,6 +32,7 @@ const TaskForm = ({ tasks, setTasks, refetch }) => {
             const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/api/tasks`, newTask);
             toast.success("Task added successfully.");
             setTasks([...tasks, newTask]);
+            // console.log(user);
 
             setTitle("");
             setDescription("");
