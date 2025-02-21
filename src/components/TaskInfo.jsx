@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import EditModal from './EditModal';
-
 const TaskInfo = ({ task, handleEdit, handleDelete, refetch }) => {
 
     const [editTask, setEditTask] = useState(task);
@@ -16,10 +15,10 @@ const TaskInfo = ({ task, handleEdit, handleDelete, refetch }) => {
 
     return (
         <>
-            <h3 className="font-medium">{task.title}</h3>
-            {task.description && (
+            <h3 className="font-medium">{task?.title}</h3>
+            {task?.description && (
                 <p className="text-sm text-gray-600 mt-2">
-                    {task.description}
+                    {task?.description}
                 </p>
             )}
             <div className="flex flex-row gap-5">
