@@ -5,8 +5,10 @@ import { useState } from "react";
 import toast from 'react-hot-toast';
 import './App.css';
 import LoadingSpinner from './components/LoadingSpinner';
+import Navbar from "./components/Navbar";
 import TaskForm from './components/TaskForm';
 import TaskInfo from './components/TaskInfo';
+import useAuth from "./hooks/useAuth";
 
 // Helper function to reorder an array
 const reorder = (list, startIndex, endIndex) => {
@@ -19,14 +21,14 @@ const reorder = (list, startIndex, endIndex) => {
 function App() {
 
   const [tasks, setTasks] = useState([]);
-
+  const { user } = useAuth();
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [editTask, setEditTask] = useState([""]);
 
   const { data: tasksData = [], isLoading, refetch } = useQuery({
     queryKey: ['tasks'],
     queryFn: async () => {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/tasks`);
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/tasks?email=${user?.email}`);
       // console.log("data Loaded");
       setTasks(data);
       return data;
@@ -152,8 +154,12 @@ function App() {
   if (isLoading) return <LoadingSpinner />;
 
   return (
-    <div className="app p-8 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8 uppercase">Task <span className="text-green-500">Management</span></h1>
+    <div className="app p-8  min-h-screen">
+
+      {/* Navbar */}
+      <Navbar />
+
+      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8 uppercase mt-16">Task <span className="text-green-500">Management</span></h1>
 
       <TaskForm
         setTasks={setTasks}
@@ -169,6 +175,7 @@ function App() {
             <Droppable key={category} droppableId={category}>
               {(provided) => (
                 <div
+                  key={category}
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                   className="category-column bg-white rounded-lg shadow-md p-4"
